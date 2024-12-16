@@ -22,6 +22,7 @@ This aims to be a production ready template repo that uses Go, Huma, Gin, Gorm, 
 * Copy the `example.env` file to `.env`.
 * Run `make run`
 
+
 ## Local go
 If you don't want the backend to run in
 * https://go.dev/doc/install
