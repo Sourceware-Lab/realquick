@@ -51,7 +51,7 @@ func initProvider() func() { //nolint:funlen
 		resource.WithHost(),
 		resource.WithAttributes(
 			// the service name used to display traces in backends
-			semconv.ServiceNameKey.String("REPLACEME2"),
+			semconv.ServiceNameKey.String("REALQUICK_SERVER"),
 		),
 	)
 	if err != nil {
@@ -132,7 +132,7 @@ func getCli() humacli.CLI {
 
 		// Create a new router & API
 		router := gin.New()
-		router.Use(otelgin.Middleware("REPLACEME2"))
+		router.Use(otelgin.Middleware("REALQUICK_SERVER"))
 		router.Use(ginLogger.SetLogger())
 		api := humagin.New(router, huma.DefaultConfig("Example API", apiVersion))
 

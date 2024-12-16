@@ -19,14 +19,14 @@ const (
 	EnvVarProjectDir               = "PROJECT_DIR"
 	EnvVarReleaseMode              = "RELEASE_MODE"
 	EnvVarDatabaseDSN              = "DATABASE_DSN"
-	EnvVarOTELExporterOTLPEndpoint = "REPLACEME_OTEL_EXPORTER_OTLP_ENDPOINT"
+	EnvVarOTELExporterOTLPEndpoint = "REALQUICK_OTEL_EXPORTER_OTLP_ENDPOINT"
 )
 
-const ProjectName = "REPLACEME"
+const ProjectName = "REALQUICK"
 
 var (
 	Config config //nolint:gochecknoglobals
-	Tracer = otel.Tracer("REPLACEME")
+	Tracer = otel.Tracer("REALQUICK")
 )
 
 type config struct {
@@ -35,7 +35,7 @@ type config struct {
 	ProjectDir               string `mapstructure:"PROJECT_DIR"`
 	ReleaseMode              bool   `mapstructure:"RELEASE_MODE"`
 	DatabaseDSN              string `mapstructure:"DATABASE_DSN"`
-	OTELExporterOTLPEndpoint string `mapstructure:"REPLACEME_OTEL_EXPORTER_OTLP_ENDPOINT"`
+	OTELExporterOTLPEndpoint string `mapstructure:"REALQUICK_OTEL_EXPORTER_OTLP_ENDPOINT"`
 }
 type DBDSN struct {
 	Host     string
