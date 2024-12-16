@@ -1,0 +1,41 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: local
+    command: [ "air", "-c", ".air.toml" ]
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    environment:
+      - DATABASE_DSN=host=postgres user=postgres password=local_fake dbname=postgres port=5432 sslmode=disable TimeZone=GMT
+      - REPLACEME_OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: local_fake
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    #      - ./seeds:/seeds
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:
+
