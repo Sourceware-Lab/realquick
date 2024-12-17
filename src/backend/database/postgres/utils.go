@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/config"
+	"github.com/Sourceware-Lab/realquick/config"
 )
 
 var DB *gorm.DB //nolint:gochecknoglobals

@@ -18,7 +18,7 @@ This aims to be a production ready template repo that uses Go, Huma, Gin, Gorm, 
 # Getting started
 * Create a new repo using `Use this as template` in the Github UI.
 * Find and replace `REALQUICK` with the name of your project.
-* Find and replace `github.com/Sourceware-Lab/go-huma-gin-postgres-template` with the path of your repo
+* Find and replace `github.com/Sourceware-Lab/realquick` with the path of your repo
 * Copy the `example.env` file to `.env`.
 * Run `make run`
 

@@ -3,7 +3,7 @@ package config_test
 import (
 	"testing"
 
-	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/config"
+	"github.com/Sourceware-Lab/realquick/config"
 )
 
 func TestDbDSN_ParseDSN(t *testing.T) {
