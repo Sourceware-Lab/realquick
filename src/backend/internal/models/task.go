@@ -47,7 +47,7 @@ func (t *Task) NewSubTask(hours float64, overflow bool, ts utils.TimeStamp) (*Su
 		return nil, errors.New("hours for task cannot be zero or negative")
 	}
 	dec := hours - math.Floor(hours)
-	if dec != 0.5 {
+	if dec != 0.0 && dec != 0.5 {
 		return nil, errors.New("hours for task cannot have a decimal besides 0.5")
 	}
 	if hours > t.GetSubHoursRemaining() {
@@ -80,7 +80,7 @@ func (t *Task) SetTotalHours(hours float64) error {
 		return errors.New("hours for task cannot be negative")
 	}
 	dec := hours - math.Floor(hours)
-	if dec != 0.5 {
+	if dec != 0.0 && dec != 0.5 {
 		return errors.New("hours for task cannot have a decimal besides 0.5")
 	}
 	t.TotalHours = hours
