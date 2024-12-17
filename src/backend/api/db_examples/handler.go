@@ -9,7 +9,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	DBpostgres "github.com/Sourceware-Lab/go-huma-gin-postgres-template/database/postgres"
+	DBpostgres "github.com/Sourceware-Lab/realquick/database/postgres"
 )
 
 func GetRawSQL(_ context.Context, input *GetInputDBExample) (*GetOutputDBExample, error) {

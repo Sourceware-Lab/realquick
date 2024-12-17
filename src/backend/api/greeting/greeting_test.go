@@ -8,8 +8,8 @@ import (
 
 	"github.com/danielgtaylor/huma/v2/humatest"
 
-	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/api"
-	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/api/greeting"
+	"github.com/Sourceware-Lab/realquick/api"
+	"github.com/Sourceware-Lab/realquick/api/greeting"
 )
 
 // Happy path test.
