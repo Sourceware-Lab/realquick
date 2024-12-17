@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
       target: local
     command: [ "air", "-c", ".air.toml" ]
+    working_dir: "/app/src/backend"
     ports:
       - "8080:8080"
     volumes:
