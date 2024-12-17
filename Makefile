@@ -1,7 +1,7 @@
 .ONESHELL:
 
 run: down
-	docker compose -f docker-compose.yml -f otel.docker-compose.yml up --remove-orphans --build
+	docker compose -f docker-compose.yml -f otel.docker-compose.yml up --remove-orphans --build frontend backend
 
 run_local: down
 	docker compose run -d --remove-orphans -p 5432:5432 postgres
