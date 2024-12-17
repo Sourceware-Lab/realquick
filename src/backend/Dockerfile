@@ -19,7 +19,7 @@ USER $USERNAME
 
 FROM gobase AS install
 
-COPY src/backend/go.mod src/backend/go.sum ./
+COPY /go.mod /go.sum ./
 RUN go mod download
 
 
@@ -29,11 +29,11 @@ USER root
 USER $USERNAME
 
 RUN go install github.com/air-verse/air@latest
-COPY src/backend .
+COPY . .
 
 
 FROM install AS build
-COPY src/backend .
+COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/backend
 
