@@ -29,4 +29,4 @@ jobs:
         run: cd src/backend && docker build -t registry.digitalocean.com/realquick-backend:latest .
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push registry.digitalocean.com/realquick-backend:latest
+        run: docker push registry.digitalocean.com/realquick-backend/backend:latest
