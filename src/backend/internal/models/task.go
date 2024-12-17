@@ -44,14 +44,14 @@ func NewTask(id int, name string, due time.Time, hours float64, tag *Tag) (*Task
 func (t *Task) NewSubTask(hours float64, overflow bool, ts utils.TimeStamp) (*SubTask, error) {
 	st := new(SubTask)
 	if hours <= 0 {
-		return nil, errors.New("hours for task cannot be zero or negative")
+		return nil, errors.New("hours for subtask cannot be zero or negative")
 	}
 	dec := hours - math.Floor(hours)
 	if dec != 0.0 && dec != 0.5 {
-		return nil, errors.New("hours for task cannot have a decimal besides 0.5")
+		return nil, errors.New("hours for subtask cannot have a decimal besides 0.5")
 	}
 	if hours > t.GetSubHoursRemaining() {
-		return nil, errors.New("hours for task cannot be greater than current hours remaining")
+		return nil, errors.New("hours for subtask cannot be greater than current hours remaining")
 	}
 	st.Hours = hours
 	st.Overflow = overflow
