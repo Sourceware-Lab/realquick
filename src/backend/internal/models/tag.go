@@ -15,14 +15,12 @@ type Tag struct {
 
 // creates a new Tag while ensuring name is non-empty and hex string is valid
 func NewTag(id int, name string, color string) (*Tag, error) {
-	var err error
 	t := new(Tag)
-	err = t.SetName(name)
-	if err != nil {
+	t.ID = id
+	if err := t.SetName(name); err != nil {
 		return nil, err
 	}
-	err = t.SetColor(color)
-	if err != nil {
+	if err := t.SetColor(color); err != nil {
 		return nil, err
 	}
 	return t, nil
@@ -39,8 +37,7 @@ func (t *Tag) SetName(name string) error {
 
 // sets color for Tag (cannot be empty)
 func (t *Tag) SetColor(color string) error {
-	s := validateyHex(color)
-	if !s {
+	if !validateyHex(color) {
 		return errors.New("color for tag is not valid")
 	}
 	t.Color = color
