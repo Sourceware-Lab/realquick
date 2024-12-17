@@ -1,15 +1,14 @@
 services:
   backend:
     build:
-      context: .
+      context: ./src/backend
       dockerfile: Dockerfile
       target: local
     command: [ "air", "-c", ".air.toml" ]
-    working_dir: "/app/src/backend"
     ports:
       - "8080:8080"
     volumes:
-      - .:/app
+      - ./src/backend:/app
     env_file:
       - ./.env
     environment:
@@ -20,6 +19,22 @@ services:
       postgres:
         condition: service_healthy
 
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - backend
 
   postgres:
     image: postgres:17-alpine
