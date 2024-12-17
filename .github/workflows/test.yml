@@ -27,7 +27,7 @@ jobs:
         run: make lint
 
       - name: Setup test env
-        run: cd src/backend && cp ./example.env ./.env
+        run: cp ./example.env ./.env
 
       - name: Run tests
         run: make test
