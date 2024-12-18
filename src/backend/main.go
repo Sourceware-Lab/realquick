@@ -28,7 +28,7 @@ import (
 
 	beApi "github.com/Sourceware-Lab/realquick/api"
 	"github.com/Sourceware-Lab/realquick/config"
-	DBpostgres "github.com/Sourceware-Lab/realquick/database/postgres"
+	"github.com/Sourceware-Lab/realquick/database/postgres"
 )
 
 const apiVersion = "0.0.1"
@@ -163,10 +163,10 @@ func main() {
 	shutdown := initProvider()
 	defer shutdown()
 
-	DBpostgres.Open(config.Config.DatabaseDSN)
+	dbpg.Open(config.Config.DatabaseDSN)
 
-	defer DBpostgres.Close()
-	DBpostgres.RunMigrations()
+	defer dbpg.Close()
+	dbpg.RunMigrations()
 
 	cli := getCli()
 	cli.Run()

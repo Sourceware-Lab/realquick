@@ -9,7 +9,8 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	DBpostgres "github.com/Sourceware-Lab/realquick/database/postgres"
+	dbpg "github.com/Sourceware-Lab/realquick/database/postgres"
+	pgmodels "github.com/Sourceware-Lab/realquick/database/postgres/models"
 )
 
 func GetRawSQL(_ context.Context, input *GetInputDBExample) (*GetOutputDBExample, error) {
@@ -22,7 +23,7 @@ func GetRawSQL(_ context.Context, input *GetInputDBExample) (*GetOutputDBExample
 		return nil, fmt.Errorf("error parsing id: %w", err)
 	}
 
-	DBpostgres.DB.Raw("SELECT * FROM users WHERE id = ?", id).Scan(&resp.Body)
+	dbpg.DB.Raw("SELECT * FROM users WHERE id = ?", id).Scan(&resp.Body)
 	resp.Format()
 
 	return resp, nil
@@ -59,7 +60,7 @@ func PostRawSQL(_ context.Context, input *PostInputDBExample) (*PostOutputDBExam
 
 	activatedAt := sql.NullTime{}
 
-	result := DBpostgres.DB.Raw(`
+	result := dbpg.DB.Raw(`
         INSERT INTO users (name, email, birthday, member_number, activated_at, age)
         VALUES (?, ?, ?, ?, ?, ?)
         RETURNING id`,
@@ -84,7 +85,7 @@ func GetOrm(_ context.Context, input *GetInputDBExample) (*GetOutputDBExample, e
 		return nil, fmt.Errorf("error parsing id: %w", err)
 	}
 
-	result := DBpostgres.DB.Model(DBpostgres.User{}).Where(DBpostgres.User{ID: uint(id)}).First(&resp.Body) //nolint:gosec
+	result := dbpg.DB.Model(pgmodels.User{}).Where(pgmodels.User{ID: uint(id)}).First(&resp.Body) //nolint:gosec
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error getting user")
 
@@ -98,7 +99,7 @@ func GetOrm(_ context.Context, input *GetInputDBExample) (*GetOutputDBExample, e
 
 func PostOrm(_ context.Context, input *PostInputDBExample) (*PostOutputDBExample, error) {
 	resp := &PostOutputDBExample{}
-	user := DBpostgres.User{
+	user := pgmodels.User{
 		Name:         input.Body.Name,
 		Email:        nil,
 		Birthday:     nil,
@@ -127,7 +128,7 @@ func PostOrm(_ context.Context, input *PostInputDBExample) (*PostOutputDBExample
 		}
 	}
 
-	result := DBpostgres.DB.Create(&user) // NOTE. This is a POINTER!
+	result := dbpg.DB.Create(&user) // NOTE. This is a POINTER!
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error creating user")
 

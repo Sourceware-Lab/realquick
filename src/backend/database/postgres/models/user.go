@@ -1,4 +1,4 @@
-package dbpostgres
+package pgmodels
 
 import (
 	"database/sql"

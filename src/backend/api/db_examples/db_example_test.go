@@ -15,13 +15,13 @@ import (
 	"github.com/Sourceware-Lab/realquick/api"
 	dbexample "github.com/Sourceware-Lab/realquick/api/db_examples"
 	"github.com/Sourceware-Lab/realquick/config"
-	DBpostgres "github.com/Sourceware-Lab/realquick/database/postgres"
+	dbpg "github.com/Sourceware-Lab/realquick/database/postgres"
 )
 
 func setup() string {
 	config.LoadConfig()
 
-	DBpostgres.Open(config.Config.DatabaseDSN)
+	dbpg.Open(config.Config.DatabaseDSN)
 
 	dbDSNString := config.Config.DatabaseDSN
 	dbDSN := config.DBDSN{}
@@ -30,17 +30,17 @@ func setup() string {
 	dbName := strings.ReplaceAll("testdb-"+uuid.New().String(), "-", "")
 	dbDSN.DBName = dbName
 
-	DBpostgres.CreateDB(dbName)
+	dbpg.CreateDB(dbName)
 
-	DBpostgres.Open(dbDSN.String())
-	DBpostgres.RunMigrations()
+	dbpg.Open(dbDSN.String())
+	dbpg.RunMigrations()
 
 	return dbName
 }
 
 func teardown(dbName string) {
-	DBpostgres.Open(config.Config.DatabaseDSN)
-	DBpostgres.DeleteDB(dbName)
+	dbpg.Open(config.Config.DatabaseDSN)
+	dbpg.DeleteDB(dbName)
 }
 
 //nolint:funlen
