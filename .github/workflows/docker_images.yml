@@ -25,8 +25,14 @@ jobs:
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 600
 
-      - name: Build container image
+      - name: Build backend container image
         run: cd src/backend && docker build -t registry.digitalocean.com/realquick/backend:latest .
 
-      - name: Push image to DigitalOcean Container Registry
+      - name: Push backend image to DigitalOcean Container Registry
         run: docker push registry.digitalocean.com/realquick/backend:latest
+
+      - name: Build frontend container image
+        run: cd src/frontend && docker build -t registry.digitalocean.com/realquick/frontend:latest .
+
+      - name: Push frontent image to DigitalOcean Container Registry
+        run: docker push registry.digitalocean.com/realquick/frontend:latest
