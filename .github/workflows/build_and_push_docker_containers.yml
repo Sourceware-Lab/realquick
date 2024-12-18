@@ -1,0 +1,47 @@
+name: Create and publish frontend and backend Docker images
+on:
+  push:
+    branches: ['main']
+env:
+  REGISTRY: registry.digitalocean.com/realquick
+  IMAGE_TAG: latest
+jobs:
+  build-and-push-backend-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: GitHub Action for DigitalOcean - doctl
+        uses: digitalocean/action-doctl@v2.5.1
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Build backend container image
+        run: cd src/backend && docker build -t ${{ env.REGISTRY }}/backend:${{ env.IMAGE_TAG }} .
+
+      - name: Push backend image to DigitalOcean Container Registry
+        run: docker push ${{ env.REGISTRY }}/backend:${{ env.IMAGE_TAG }}
+
+  build-and-push-frontend-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: GitHub Action for DigitalOcean - doctl
+        uses: digitalocean/action-doctl@v2.5.1
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Build frontend container image
+        run: cd src/frontend && docker build -t ${{ env.REGISTRY }}/frontend:${{ env.IMAGE_TAG }} .
+
+      - name: Push frontend image to DigitalOcean Container Registry
+        run: docker push ${{ env.REGISTRY }}/frontend:${{ env.IMAGE_TAG }}
