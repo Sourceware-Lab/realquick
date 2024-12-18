@@ -9,6 +9,7 @@ import (
 	"github.com/Sourceware-Lab/realquick/internal/utils"
 )
 
+//nolint:funlen
 func TestVerify(t *testing.T) {
 	t.Parallel()
 

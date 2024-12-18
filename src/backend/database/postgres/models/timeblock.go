@@ -32,22 +32,18 @@ type TimeBlock struct {
 
 func (t TimeBlock) Verify() error {
 	if t.Name == "" {
-
 		return ErrMissingName
 	}
 
 	if t.Recur && t.Days == nil {
-
 		return ErrMissingDays
 	}
 
 	if t.Days != nil && !t.Recur {
-
 		return ErrMissingRecur
 	}
 
 	if t.EndDate != nil && t.StartDate.After(*t.EndDate) {
-
 		return ErrStartAfterEnd
 	}
 
