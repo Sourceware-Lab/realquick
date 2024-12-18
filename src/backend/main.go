@@ -28,7 +28,7 @@ import (
 
 	beApi "github.com/Sourceware-Lab/realquick/api"
 	"github.com/Sourceware-Lab/realquick/config"
-	"github.com/Sourceware-Lab/realquick/database/postgres"
+	dbpg "github.com/Sourceware-Lab/realquick/database/postgres"
 )
 
 const apiVersion = "0.0.1"
