@@ -4,44 +4,16 @@ import (
 	"encoding/json"
 	"math/rand"
 	"strconv"
-	"strings"
 	"testing"
 	"time"
 
 	"github.com/danielgtaylor/huma/v2/humatest"
 	"github.com/google/go-cmp/cmp"
-	"github.com/google/uuid"
 
 	"github.com/Sourceware-Lab/realquick/api"
 	dbexample "github.com/Sourceware-Lab/realquick/api/db_examples"
-	"github.com/Sourceware-Lab/realquick/config"
 	dbpg "github.com/Sourceware-Lab/realquick/database/postgres"
 )
-
-func setup() string {
-	config.LoadConfig()
-
-	dbpg.Open(config.Config.DatabaseDSN)
-
-	dbDSNString := config.Config.DatabaseDSN
-	dbDSN := config.DBDSN{}
-	dbDSN.ParseDSN(dbDSNString)
-
-	dbName := strings.ReplaceAll("testdb-"+uuid.New().String(), "-", "")
-	dbDSN.DBName = dbName
-
-	dbpg.CreateDB(dbName)
-
-	dbpg.Open(dbDSN.String())
-	dbpg.RunMigrations()
-
-	return dbName
-}
-
-func teardown(dbName string) {
-	dbpg.Open(config.Config.DatabaseDSN)
-	dbpg.DeleteDB(dbName)
-}
 
 //nolint:funlen
 func TestRoutes(t *testing.T) {
@@ -82,8 +54,8 @@ func TestRoutes(t *testing.T) {
 
 	for _, tt := range tests {
 		func() {
-			dbName := setup()
-			defer teardown(dbName)
+			dbName := dbpg.Setup()
+			defer dbpg.Teardown(dbName)
 
 			_, apiInstance := humatest.New(t)
 			api.AddRoutes(apiInstance)
