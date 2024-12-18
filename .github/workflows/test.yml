@@ -15,6 +15,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Setup test env
+        run: cp ./example.env ./.env
+
+      - name: Run tests
+        run: make test
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
@@ -25,9 +38,3 @@ jobs:
 
       - name: Run linters
         run: make lint
-
-      - name: Setup test env
-        run: cp ./example.env ./.env
-
-      - name: Run tests
-        run: make test
