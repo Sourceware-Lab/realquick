@@ -1,4 +1,4 @@
-package dbpostgres
+package dbpg
 
 import (
 	"time"
@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm/logger"
 
 	"github.com/Sourceware-Lab/realquick/config"
+	pgmodels "github.com/Sourceware-Lab/realquick/database/postgres/models"
 )
 
 var DB *gorm.DB //nolint:gochecknoglobals
@@ -114,7 +115,7 @@ func DeleteDB(dbName string) {
 func RunMigrations() {
 	log.Info().Msg("Running migrations")
 
-	err := DB.AutoMigrate(&User{})
+	err := DB.AutoMigrate(&pgmodels.User{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error migrating database")
 	}
