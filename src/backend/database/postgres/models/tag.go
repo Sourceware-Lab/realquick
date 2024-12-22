@@ -9,11 +9,10 @@ import (
 )
 
 var (
-	ErrMissingName  = errors.New("name is required")
-	ErrInvalidColor = errors.New("valid hex string for color is required")
+	errMissingName  = errors.New("name is required")
+	errInvalidColor = errors.New("valid hex string for color is required")
+	regex           = regexp.MustCompile("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
 )
-
-var regex = regexp.MustCompile("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
 
 type Tag struct {
 	ID        uint `gorm:"primarykey"`
@@ -26,11 +25,11 @@ type Tag struct {
 
 func (t Tag) Verify() error {
 	if strings.TrimSpace(t.Name) == "" {
-		return ErrMissingName
+		return errMissingName
 	}
 
 	if !t.isValidHex() {
-		return ErrInvalidColor
+		return errInvalidColor
 	}
 
 	return nil
