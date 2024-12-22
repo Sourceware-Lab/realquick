@@ -2,15 +2,16 @@ package pgmodels
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"regexp"
 	"strings"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 var (
-	errMissingName  = errors.New("name is required")
-	errInvalidColor = errors.New("valid hex string for color is required")
+	ErrMissingName  = errors.New("name is required")
+	ErrInvalidColor = errors.New("valid hex string for color is required")
 	regex           = regexp.MustCompile("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
 )
 
@@ -19,17 +20,18 @@ type Tag struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
-	Name      string
-	Color     string
+
+	Name  string
+	Color string
 }
 
 func (t Tag) Verify() error {
 	if strings.TrimSpace(t.Name) == "" {
-		return errMissingName
+		return ErrMissingName
 	}
 
 	if !t.isValidHex() {
-		return errInvalidColor
+		return ErrInvalidColor
 	}
 
 	return nil
