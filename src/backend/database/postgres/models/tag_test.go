@@ -26,12 +26,12 @@ func TestTag_Verify(t *testing.T) {
 		{
 			name:      "missing name",
 			tag:       pgmodels.Tag{Name: "", Color: "#ff5733"},
-			wantError: pgmodels.ErrMissingName,
+			wantError: pgmodels.ErrMissingTagName,
 		},
 		{
 			name:      "name with only spaces",
 			tag:       pgmodels.Tag{Name: "   ", Color: "#ff5733"},
-			wantError: pgmodels.ErrMissingName,
+			wantError: pgmodels.ErrMissingTagName,
 		},
 
 		// Color
