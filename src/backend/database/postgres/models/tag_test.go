@@ -7,6 +7,7 @@ import (
 	pgmodels "github.com/Sourceware-Lab/realquick/database/postgres/models"
 )
 
+//nolint:funlen
 func TestTag_Verify(t *testing.T) {
 	t.Parallel()
 
@@ -33,7 +34,7 @@ func TestTag_Verify(t *testing.T) {
 			wantError: pgmodels.ErrMissingName,
 		},
 
-		//Color
+		// Color
 		{
 			name:      "color invalid hex",
 			tag:       pgmodels.Tag{Name: "TagName", Color: "123456"},
