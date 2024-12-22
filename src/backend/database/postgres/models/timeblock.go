@@ -8,10 +8,10 @@ import (
 )
 
 var (
-	ErrMissingName   = errors.New("name is required")
-	ErrMissingDays   = errors.New("days are required when recur is true")
-	ErrMissingRecur  = errors.New("recur is required when days are provided")
-	ErrStartAfterEnd = errors.New("start date cannot be after end date")
+	ErrMissingTimeblockName = errors.New("name is required")
+	ErrMissingDays          = errors.New("days are required when recur is true")
+	ErrMissingRecur         = errors.New("recur is required when days are provided")
+	ErrStartAfterEnd        = errors.New("start date cannot be after end date")
 )
 
 type TimeBlock struct {
@@ -20,7 +20,7 @@ type TimeBlock struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 
-	// Tag       *Tag            // label and color for timeblock
+	Tag       *Tag       // label and color for timeblock
 	Name      string     // name for timeblock
 	Days      *string    // days of the week timeblock recurs
 	Recur     bool       // whether timeblock recurs
@@ -32,7 +32,7 @@ type TimeBlock struct {
 
 func (t TimeBlock) Verify() error {
 	if t.Name == "" {
-		return ErrMissingName
+		return ErrMissingTimeblockName
 	}
 
 	if t.Recur && t.Days == nil {
