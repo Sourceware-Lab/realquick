@@ -10,9 +10,9 @@ import (
 )
 
 var (
-	ErrMissingName  = errors.New("name is required")
-	ErrInvalidColor = errors.New("valid hex string for color is required")
-	regex           = regexp.MustCompile("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
+	ErrMissingTagName = errors.New("name is required")
+	ErrInvalidColor   = errors.New("valid hex string for color is required")
+	regex             = regexp.MustCompile("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
 )
 
 type Tag struct {
@@ -27,7 +27,7 @@ type Tag struct {
 
 func (t Tag) Verify() error {
 	if strings.TrimSpace(t.Name) == "" {
-		return ErrMissingName
+		return ErrMissingTagName
 	}
 
 	if !t.isValidHex() {
