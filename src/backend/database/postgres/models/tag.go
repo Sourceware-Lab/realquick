@@ -23,6 +23,8 @@ type Tag struct {
 
 	Name  string
 	Color string
+
+	TimeBlocks []TimeBlock
 }
 
 func (t Tag) Verify() error {

@@ -19,7 +19,7 @@ type PostInputDBExample struct {
 
 func (p *PostInputDBExample) Format() *PostInputDBExample {
 	if p.Body.Birthday != nil {
-		birthday, err := utils.ParseAnyDatetime(*p.Body.Birthday)
+		birthday, err := utils.ParseDatetime(*p.Body.Birthday)
 		if err != nil {
 			return p
 		}
