@@ -115,7 +115,7 @@ func DeleteDB(dbName string) {
 func RunMigrations() {
 	log.Info().Msg("Running migrations")
 
-	err := DB.AutoMigrate(&pgmodels.User{})
+	err := DB.AutoMigrate(&pgmodels.User{}, &pgmodels.Tag{}, &pgmodels.TimeBlock{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error migrating database")
 	}
