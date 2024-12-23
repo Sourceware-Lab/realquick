@@ -25,7 +25,7 @@ func TestVerify(t *testing.T) {
 				Name: "",
 			},
 			wantErr: true,
-			errMsg:  pgmodels.ErrMissingTagName,
+			errMsg:  pgmodels.ErrMissingTimeblockName,
 		},
 		{
 			name: "missing days with recur true",
