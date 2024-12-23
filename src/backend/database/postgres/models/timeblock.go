@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+
+	"github.com/Sourceware-Lab/realquick/internal/types"
 )
 
 var (
@@ -20,14 +22,14 @@ type TimeBlock struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 
-	TagID     uint       // ID of tag. Tag obj has ref to make this a FK
-	Name      string     // name for timeblock
-	Days      *string    // days of the week timeblock recurs
-	Recur     bool       // whether timeblock recurs
-	StartDate time.Time  // start date for timeblock
-	EndDate   *time.Time // end date for timeblock
-	// TimeStamp utils.TimeStamp // timestamp for timeblock TODO
-	Duration time.Duration // duration for a timestamp
+	TagID     uint          // ID of tag. Tag obj has ref to make this a FK
+	Name      string        // name for timeblock
+	Days      *string       // days of the week timeblock reoccur
+	Recur     bool          // whether timeblock reoccur
+	StartDate time.Time     // start date for timeblock
+	EndDate   *time.Time    // end date for timeblock
+	TimeStamp types.Time    // timestamp for timeblock
+	Duration  time.Duration // duration for a timestamp
 }
 
 func (t TimeBlock) Verify() error {

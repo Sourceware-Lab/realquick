@@ -10,6 +10,8 @@ var DatetimeFormats = []string{ //nolint:gochecknoglobals
 	time.RFC3339Nano,
 }
 
+// ParseDatetime attempts to parse a datetime string using predefined layouts and returns the parsed time or an error.
+// It iterates through supported datetime formats (e.g., RFC3339, RFC3339Nano) until a match is found or fails.
 func ParseDatetime(s string) (time.Time, error) {
 	parsedTime := time.Time{}
 
