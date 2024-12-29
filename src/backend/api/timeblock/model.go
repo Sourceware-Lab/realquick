@@ -3,7 +3,10 @@ package timeblockapi
 import (
 	"time"
 
-	"github.com/peterHoburg/go-date-and-time-extension/dtegorm"
+	"github.com/danielgtaylor/huma/v2"
+	"gorm.io/gorm"
+
+	pgmodels "github.com/Sourceware-Lab/realquick/database/postgres/models"
 )
 
 type TimeblockPostInput struct {
@@ -11,14 +14,33 @@ type TimeblockPostInput struct {
 }
 
 type TimeblockPostBodyInput struct {
-	TagID     uint          // ID of tag. Tag obj has ref to make this a FK
-	Name      string        // name for timeblock
-	Days      *string       // days of the week timeblock reoccur
-	Recur     bool          // whether timeblock reoccur
-	StartDate dtegorm.Date  `example:"2024-01-02"`
-	EndDate   *dtegorm.Date `example:"2024-01-02"`
-	TimeStamp dtegorm.Time  `example:"15:04:05Z"`
-	Duration  time.Duration // duration for a timestamp
+	pgmodels.TimeBlock
+
+	// fields to ignore. `json:"-" will instruct huma and json to ignore the field.
+	ID        uint           `json:"-"`
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `json:"-"`
+}
+
+func (i *TimeblockPostBodyInput) Resolve(_ huma.Context) []error {
+	if i.Recur && i.Days == nil {
+		return []error{&huma.ErrorDetail{
+			Location: "TimeblockPostBodyInput.days",
+			Message:  "If recur is true, days must be set",
+			Value:    i.Days,
+		}}
+	}
+
+	if !i.Recur && i.Days != nil {
+		return []error{&huma.ErrorDetail{
+			Location: "TimeblockPostBodyInput.days",
+			Message:  "If recur is false, days must not be set",
+			Value:    i.Days,
+		}}
+	}
+
+	return nil
 }
 
 type TimeblockPostOutput struct {
