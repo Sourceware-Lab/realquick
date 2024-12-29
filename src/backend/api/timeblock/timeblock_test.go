@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/danielgtaylor/huma/v2/humatest"
+	"github.com/google/go-cmp/cmp"
 	"github.com/peterHoburg/go-date-and-time-extension/dtegorm"
 
 	"github.com/Sourceware-Lab/realquick/api"
@@ -90,17 +91,17 @@ func TestRoutes(t *testing.T) {
 				t.Fatalf("Unexpected response: %s", resp.Body.String())
 			}
 
-			//	getResp := apiInstance.Get(tt.basePath + "/1")
-			//	getRespBody := dbexample.GetOutputDBExample{}
-			//
-			//	err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
-			//	if err != nil {
-			//		t.Fatalf("Failed to unmarshal response: %s", err.Error())
-			//	}
-			//
-			//	if !cmp.Equal(getRespBody.Body, tt.want.Body) {
-			//		t.Fatalf("Unexpected response: %s", getResp.Body.String())
-			//	}
+			getResp := apiInstance.Get(tt.basePath + "/1")
+			getRespBody := timeblockapi.TimeblockPostOutput{}.Body
+
+			err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
+			if err != nil {
+				t.Fatalf("Failed to unmarshal response: %s", err.Error())
+			}
+
+			if !cmp.Equal(getRespBody, tt.input) {
+				t.Fatalf("Unexpected response: %s", getResp.Body.String())
+			}
 		}() //nolint:wsl
 	}
 }

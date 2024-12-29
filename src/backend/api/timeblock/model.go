@@ -9,10 +9,23 @@ import (
 	pgmodels "github.com/Sourceware-Lab/realquick/database/postgres/models"
 )
 
+type TimeblockGetInput struct {
+	ID uint
+}
+
+type TimeblockGetOutput struct {
+	Body TimeblockPostBodyInput
+}
+
 type TimeblockPostInput struct {
 	Body TimeblockPostBodyInput `json:"body"`
 }
 
+type TimeblockPostOutput struct {
+	Body struct {
+		ID uint `doc:"Id for new user" example:"999" json:"id"`
+	}
+}
 type TimeblockPostBodyInput struct {
 	pgmodels.TimeBlock
 
@@ -53,10 +66,4 @@ func (i *TimeblockPostBodyInput) Resolve(_ huma.Context) []error {
 	}
 
 	return nil
-}
-
-type TimeblockPostOutput struct {
-	Body struct {
-		ID uint `doc:"Id for new user" example:"999" json:"id"`
-	}
 }

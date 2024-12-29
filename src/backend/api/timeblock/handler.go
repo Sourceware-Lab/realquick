@@ -6,7 +6,21 @@ import (
 	"github.com/rs/zerolog/log"
 
 	dbpg "github.com/Sourceware-Lab/realquick/database/postgres"
+	pgmodels "github.com/Sourceware-Lab/realquick/database/postgres/models"
 )
+
+func Get(_ context.Context, input *TimeblockGetInput) (*TimeblockGetOutput, error) {
+	resp := &TimeblockGetOutput{}
+
+	result := dbpg.DB.Model(pgmodels.TimeBlock{}).Where(pgmodels.TimeBlock{ID: input.ID}).First(&resp.Body.TimeBlock)
+	if result.Error != nil {
+		log.Error().Err(result.Error).Msg("Error getting timeblock")
+
+		return nil, result.Error
+	}
+
+	return resp, nil
+}
 
 func Post(_ context.Context, input *TimeblockPostInput) (*TimeblockPostOutput, error) {
 	resp := &TimeblockPostOutput{}

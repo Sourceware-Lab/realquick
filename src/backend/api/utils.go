@@ -23,6 +23,17 @@ func AddRoutes(api huma.API) {
 	)
 
 	huma.Register(api, huma.Operation{
+		OperationID:   "get-timeblock",
+		Method:        http.MethodGet,
+		Path:          "/timeblock/{id}",
+		Summary:       "Get timeblock",
+		Tags:          []string{"timeblock"},
+		DefaultStatus: http.StatusOK,
+	},
+		timeblockapi.Get,
+	)
+
+	huma.Register(api, huma.Operation{
 		OperationID:   "post-timeblock",
 		Method:        http.MethodPost,
 		Path:          "/timeblock",
