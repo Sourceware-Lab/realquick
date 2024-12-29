@@ -4,9 +4,8 @@ import (
 	"errors"
 	"time"
 
+	"github.com/peterHoburg/go-date-and-time-extension/dtegorm"
 	"gorm.io/gorm"
-
-	"github.com/Sourceware-Lab/realquick/internal/types"
 )
 
 var (
@@ -26,9 +25,9 @@ type TimeBlock struct {
 	Name      string        // name for timeblock
 	Days      *string       // days of the week timeblock reoccur
 	Recur     bool          // whether timeblock reoccur
-	StartDate time.Time     // start date for timeblock
-	EndDate   *time.Time    // end date for timeblock
-	TimeStamp types.Time    // timestamp for timeblock
+	StartDate dtegorm.Date  // start date for timeblock
+	EndDate   *dtegorm.Date // end date for timeblock
+	TimeStamp dtegorm.Time  // timestamp for timeblock
 	Duration  time.Duration // duration for a timestamp
 }
 
@@ -45,7 +44,8 @@ func (t TimeBlock) Verify() error {
 		return ErrMissingRecur
 	}
 
-	if t.EndDate != nil && t.StartDate.After(*t.EndDate) {
+	a := t.EndDate
+	if t.EndDate != nil && t.StartDate.After(a.Time) {
 		return ErrStartAfterEnd
 	}
 

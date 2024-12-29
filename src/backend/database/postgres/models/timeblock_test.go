@@ -3,7 +3,8 @@ package pgmodels_test
 import (
 	"errors"
 	"testing"
-	"time"
+
+	"github.com/peterHoburg/go-date-and-time-extension/dtegorm"
 
 	pgmodels "github.com/Sourceware-Lab/realquick/database/postgres/models"
 	"github.com/Sourceware-Lab/realquick/internal/utils"
@@ -50,8 +51,8 @@ func TestVerify(t *testing.T) {
 			name: "start after end",
 			timeblock: pgmodels.TimeBlock{
 				Name:      "test",
-				StartDate: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC),
-				EndDate:   utils.MakePointer(time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC)),
+				StartDate: func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-02"); return t }(),
+				EndDate:   func() *dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-01"); return &t }(),
 			},
 			wantErr: true,
 			errMsg:  pgmodels.ErrStartAfterEnd,
