@@ -23,6 +23,10 @@ type TimeblockPostBodyInput struct {
 	DeletedAt gorm.DeletedAt `json:"-"`
 }
 
+func (i *TimeblockPostBodyInput) TableName() string {
+	return "time_blocks"
+}
+
 func (i *TimeblockPostBodyInput) Resolve(_ huma.Context) []error {
 	if i.Recur && i.Days == nil {
 		return []error{&huma.ErrorDetail{

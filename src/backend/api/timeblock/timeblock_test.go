@@ -1,7 +1,7 @@
 package timeblockapi_test
 
 //
-//import (
+// import (
 //	"encoding/json"
 //	"math/rand"
 //	"strconv"
@@ -17,7 +17,7 @@ package timeblockapi_test
 //)
 //
 ////nolint:funlen
-//func TestRoutes(t *testing.T) {
+// func TestRoutes(t *testing.T) {
 //	t.Parallel()
 //
 //	tests := []struct {
