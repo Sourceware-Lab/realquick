@@ -82,7 +82,7 @@ func TestRoutes(t *testing.T) {
 				t.Fatalf("Failed to unmarshal response: %s", err.Error())
 			}
 
-			//if !cmp.Equal(postRespBody, tt.want) { TODO why is this not working?
+			// if !cmp.Equal(postRespBody, tt.want) { TODO why is this not working?
 			//	t.Fatalf("Unexpected response: %s", resp.Body.String())
 			//}
 
@@ -101,6 +101,6 @@ func TestRoutes(t *testing.T) {
 			//	if !cmp.Equal(getRespBody.Body, tt.want.Body) {
 			//		t.Fatalf("Unexpected response: %s", getResp.Body.String())
 			//	}
-		}()
+		}() //nolint:wsl
 	}
 }
