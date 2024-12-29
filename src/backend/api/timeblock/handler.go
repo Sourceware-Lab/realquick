@@ -2,7 +2,6 @@ package timeblockapi
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/rs/zerolog/log"
 
@@ -19,7 +18,7 @@ func Post(_ context.Context, input *TimeblockPostInput) (*TimeblockPostOutput, e
 		return nil, result.Error
 	}
 
-	resp.Body.ID = strconv.Itoa(int(input.Body.ID)) //nolint:gosec
+	resp.Body.ID = input.Body.ID
 
 	return resp, nil
 }

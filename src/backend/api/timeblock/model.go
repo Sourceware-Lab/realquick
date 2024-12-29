@@ -44,11 +44,19 @@ func (i *TimeblockPostBodyInput) Resolve(_ huma.Context) []error {
 		}}
 	}
 
+	if i.EndDate != nil && i.StartDate.After(i.EndDate.Time) {
+		return []error{&huma.ErrorDetail{
+			Location: "TimeblockPostBodyInput.startDate",
+			Message:  "Start date must be before end date",
+			Value:    i.StartDate,
+		}}
+	}
+
 	return nil
 }
 
 type TimeblockPostOutput struct {
 	Body struct {
-		ID string `doc:"Id for new user" example:"999" json:"id"`
+		ID uint `doc:"Id for new user" example:"999" json:"id"`
 	}
 }
