@@ -109,7 +109,7 @@ func TestRoutes(t *testing.T) {
 			wantErrStatus: http.StatusUnprocessableEntity,
 		},
 		{
-			name:     "mostly empty",
+			name:     "end time before start time",
 			basePath: "/timeblock",
 			input: input{
 				TagID:     1,
@@ -121,7 +121,9 @@ func TestRoutes(t *testing.T) {
 				StartTime: func() dtegorm.Time { t, _ := dtegorm.NewTime("15:10:04Z"); return t }(),
 				EndTime:   func() dtegorm.Time { t, _ := dtegorm.NewTime("14:10:04Z"); return t }(),
 			},
-			expectErr: true,
+			expectErr:     true,
+			wantErrDetail: "validation failed",
+			wantErrStatus: http.StatusUnprocessableEntity,
 		},
 	}
 

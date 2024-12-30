@@ -59,5 +59,13 @@ func (i *TimeblockPostBodyInput) Resolve(_ huma.Context) []error {
 		}}
 	}
 
+	if i.StartTime.After(i.EndTime.Time.Time) {
+		return []error{&huma.ErrorDetail{
+			Location: "TimeblockPostBodyInput.startTime",
+			Message:  "Start time must be before end time",
+			Value:    i.StartTime,
+		}}
+	}
+
 	return nil
 }
