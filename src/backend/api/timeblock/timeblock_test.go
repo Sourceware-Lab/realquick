@@ -3,9 +3,11 @@ package timeblockapi_test
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"reflect"
 	"testing"
 
+	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/humatest"
 	"github.com/peterHoburg/go-date-and-time-extension/dtegorm"
 
@@ -17,6 +19,7 @@ import (
 )
 
 //nolint:funlen
+//nolint:gocognit
 func TestRoutes(t *testing.T) {
 	t.Parallel()
 
@@ -31,18 +34,16 @@ func TestRoutes(t *testing.T) {
 		EndTime   dtegorm.Time
 	}
 
-	type want struct {
-		ID uint
-	}
-	// TODO write test that expects error from put
 	tests := []struct {
-		name     string
-		basePath string
-		input    input
-		want     want
+		name          string
+		basePath      string
+		input         input
+		expectErr     bool
+		wantErrDetail string
+		wantErrStatus int
 	}{
 		{
-			name:     "post",
+			name:     "mostly empty",
 			basePath: "/timeblock",
 			input: input{
 				TagID:     1,
@@ -54,27 +55,73 @@ func TestRoutes(t *testing.T) {
 				StartTime: dtegorm.Time{},
 				EndTime:   dtegorm.Time{},
 			},
-			want: want{
-				ID: 1,
-			},
+			expectErr: false,
 		},
 
 		{
-			name:     "post",
+			name:     "Full",
 			basePath: "/timeblock",
 			input: input{
 				TagID:     1,
 				Name:      "some dumb name",
 				Days:      utils.MakePointer("0100000"),
 				Recur:     true,
-				StartDate: dtegorm.Date{},
+				StartDate: func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-02"); return t }(),
+				EndDate:   utils.MakePointer(func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-03"); return t }()),
+				StartTime: func() dtegorm.Time { t, _ := dtegorm.NewTime("15:10:04Z"); return t }(),
+				EndTime:   func() dtegorm.Time { t, _ := dtegorm.NewTime("17:10:04Z"); return t }(),
+			},
+			expectErr: false,
+		},
+		{
+			name:     "with days, missing recur",
+			basePath: "/timeblock",
+			input: input{
+				TagID:     1,
+				Name:      "some dumb name",
+				Days:      utils.MakePointer("0100000"),
+				Recur:     false,
+				StartDate: func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-02"); return t }(),
 				EndDate:   nil,
 				StartTime: dtegorm.Time{},
 				EndTime:   dtegorm.Time{},
 			},
-			want: want{
-				ID: 1,
+			expectErr:     true,
+			wantErrDetail: "validation failed",
+			wantErrStatus: http.StatusUnprocessableEntity,
+		},
+
+		{
+			name:     "start date after end date",
+			basePath: "/timeblock",
+			input: input{
+				TagID:     1,
+				Name:      "some dumb name",
+				Days:      nil,
+				Recur:     false,
+				StartDate: func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-02"); return t }(),
+				EndDate:   utils.MakePointer(func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-01"); return t }()),
+				StartTime: dtegorm.Time{},
+				EndTime:   dtegorm.Time{},
 			},
+			expectErr:     true,
+			wantErrDetail: "validation failed",
+			wantErrStatus: http.StatusUnprocessableEntity,
+		},
+		{
+			name:     "mostly empty",
+			basePath: "/timeblock",
+			input: input{
+				TagID:     1,
+				Name:      "some dumb name",
+				Days:      nil,
+				Recur:     false,
+				StartDate: dtegorm.Date{},
+				EndDate:   nil,
+				StartTime: func() dtegorm.Time { t, _ := dtegorm.NewTime("15:10:04Z"); return t }(),
+				EndTime:   func() dtegorm.Time { t, _ := dtegorm.NewTime("14:10:04Z"); return t }(),
+			},
+			expectErr: true,
 		},
 	}
 
@@ -96,6 +143,29 @@ func TestRoutes(t *testing.T) {
 
 			resp := apiInstance.Post(tt.basePath, tt.input)
 
+			if resp.Code != http.StatusCreated {
+				if !tt.expectErr {
+					t.Fatalf("Unexpected response: %s", resp.Body.String())
+				}
+				respErr := huma.ErrorModel{}
+
+				err := json.Unmarshal(resp.Body.Bytes(), &respErr)
+				if err != nil {
+					t.Fatalf("Failed to unmarshal response: %s", err.Error())
+				}
+
+				if respErr.Detail != tt.wantErrDetail {
+					t.Fatalf("Incorrect error detail: %s", respErr.Detail)
+				}
+
+				if respErr.Status != tt.wantErrStatus {
+					t.Fatalf("Incorrect error status: %d", respErr.Status)
+				}
+
+				return
+			} else if tt.expectErr {
+				t.Fatalf("expected error, got %d", resp.Code)
+			}
 			postRespBody := timeblockapi.TimeblockPostOutput{}.Body
 
 			err := json.Unmarshal(resp.Body.Bytes(), &postRespBody)
@@ -103,15 +173,7 @@ func TestRoutes(t *testing.T) {
 				t.Fatalf("Failed to unmarshal response: %s", err.Error())
 			}
 
-			// if !cmp.Equal(postRespBody, tt.want) { TODO why is this not working?
-			//	t.Fatalf("Unexpected response: %s", resp.Body.String())
-			//}
-
-			if postRespBody.ID != tt.want.ID {
-				t.Fatalf("Unexpected response: %s", resp.Body.String())
-			}
-
-			getResp := apiInstance.Get(tt.basePath + "/1")
+			getResp := apiInstance.Get(tt.basePath + "/" + fmt.Sprint(postRespBody.ID))
 			getRespBody := timeblockapi.TimeblockGetOutput{}.Body
 
 			err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
@@ -141,12 +203,18 @@ func TestRoutes(t *testing.T) {
 				t.Fatalf("Unexpected response: %s", resp.Body.String())
 			}
 
-			if tt.input.StartDate != getRespBody.StartDate {
+			if tt.input.StartDate.String() != getRespBody.StartDate.String() {
 				t.Fatalf("Unexpected response: %s", resp.Body.String())
 			}
 
-			if tt.input.EndDate != getRespBody.EndDate {
-				t.Fatalf("Unexpected response: %s", resp.Body.String())
+			if tt.input.EndDate == nil {
+				if getRespBody.EndDate != nil {
+					t.Fatalf("Unexpected response: %s", resp.Body.String())
+				}
+			} else {
+				if tt.input.EndDate.String() != getRespBody.EndDate.String() {
+					t.Fatalf("Unexpected response: %s", resp.Body.String())
+				}
 			}
 
 			if tt.input.StartTime.String() != getRespBody.StartTime.String() {
@@ -157,7 +225,7 @@ func TestRoutes(t *testing.T) {
 				t.Fatalf("Unexpected response: %s", resp.Body.String())
 			}
 
-			if tt.want.ID != getRespBody.ID {
+			if postRespBody.ID != getRespBody.ID {
 				t.Fatalf("Unexpected response: %s", resp.Body.String())
 			}
 
