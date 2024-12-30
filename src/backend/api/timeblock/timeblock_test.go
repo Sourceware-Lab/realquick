@@ -19,8 +19,7 @@ import (
 	"github.com/Sourceware-Lab/realquick/internal/utils"
 )
 
-//nolint:funlen
-//nolint:gocognit
+//nolint:funlen, gocognit, cyclop, maintidx, tparallel
 func TestRoutes(t *testing.T) {
 	t.Parallel()
 
