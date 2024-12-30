@@ -46,5 +46,5 @@ down:
 	docker compose down --remove-orphans
 
 generate_sdk: down
-	docker compose -f ./docker-compose.yml -p realquick up -d typescript_sdk_generator
+	docker compose -f ts_sdk.docker-compose.yml -f docker-compose.yml -p realquick up -d typescript_sdk_generator
 

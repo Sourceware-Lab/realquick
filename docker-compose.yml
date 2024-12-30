@@ -56,20 +56,6 @@ services:
       timeout: 5s
       retries: 10
 
-  typescript_sdk_generator:
-    image: openapitools/openapi-generator-cli@sha256:886c20b037a9a75bd925de3089f369c05d6b70c93230bc3f0ac22cd4ae0a9385
-    volumes:
-      - ./src/frontend/plugins/realquick:/local
-    command: >
-      generate
-      -i http://backend:8080/openapi.json
-      -g typescript-axios
-      -o /local
-      --additional-properties=supportsES6=true,nullSafeAdditionalProps=true,withSeparateModelsAndApi=true,apiPackage=api,modelPackage=models
-    depends_on:
-      backend:
-        condition: service_healthy
 
 volumes:
   postgres-data:
-

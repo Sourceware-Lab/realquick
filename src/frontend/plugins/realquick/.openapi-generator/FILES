@@ -1,5 +1,6 @@
 .gitignore
 .npmignore
+.openapi-generator-ignore
 api.ts
 api/healthcheck-api.ts
 api/timeblock-api.ts
