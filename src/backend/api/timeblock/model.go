@@ -1,20 +1,20 @@
 package timeblockapi
 
 import (
-	"time"
-
 	"github.com/danielgtaylor/huma/v2"
-	"gorm.io/gorm"
 
 	pgmodels "github.com/Sourceware-Lab/realquick/database/postgres/models"
 )
 
 type TimeblockGetInput struct {
-	ID uint
+	ID uint `doc:"Id for the timeblock you want to get" example:"999" path:"id"`
 }
 
 type TimeblockGetOutput struct {
-	Body TimeblockPostBodyInput
+	Body struct {
+		TimeblockPostBodyInput
+		ID uint `json:"id"`
+	}
 }
 
 type TimeblockPostInput struct {
@@ -28,12 +28,6 @@ type TimeblockPostOutput struct {
 }
 type TimeblockPostBodyInput struct {
 	pgmodels.TimeBlock
-
-	// fields to ignore. `json:"-" will instruct huma and json to ignore the field.
-	ID        uint           `json:"-"`
-	CreatedAt time.Time      `json:"-"`
-	UpdatedAt time.Time      `json:"-"`
-	DeletedAt gorm.DeletedAt `json:"-"`
 }
 
 func (i *TimeblockPostBodyInput) TableName() string {
