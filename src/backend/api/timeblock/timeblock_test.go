@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"strconv"
 	"testing"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -24,7 +25,7 @@ func TestRoutes(t *testing.T) {
 	t.Parallel()
 
 	type input struct {
-		TagID     uint
+		TagID     uint64
 		Name      string
 		Days      *string
 		Recur     bool
@@ -66,10 +67,10 @@ func TestRoutes(t *testing.T) {
 				Name:      "some dumb name",
 				Days:      utils.MakePointer("0100000"),
 				Recur:     true,
-				StartDate: func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-02"); return t }(),
-				EndDate:   utils.MakePointer(func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-03"); return t }()),
-				StartTime: func() dtegorm.Time { t, _ := dtegorm.NewTime("15:10:04Z"); return t }(),
-				EndTime:   func() dtegorm.Time { t, _ := dtegorm.NewTime("17:10:04Z"); return t }(),
+				StartDate: func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-02"); return t }(),                    //nolint:lll,nlreturn
+				EndDate:   utils.MakePointer(func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-03"); return t }()), //nolint:lll,nlreturn
+				StartTime: func() dtegorm.Time { t, _ := dtegorm.NewTime("15:10:04Z"); return t }(),                     //nolint:lll,nlreturn
+				EndTime:   func() dtegorm.Time { t, _ := dtegorm.NewTime("17:10:04Z"); return t }(),                     //nolint:lll,nlreturn
 			},
 			expectErr: false,
 		},
@@ -81,7 +82,7 @@ func TestRoutes(t *testing.T) {
 				Name:      "some dumb name",
 				Days:      utils.MakePointer("0100000"),
 				Recur:     false,
-				StartDate: func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-02"); return t }(),
+				StartDate: func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-02"); return t }(), //nolint:nlreturn
 				EndDate:   nil,
 				StartTime: dtegorm.Time{},
 				EndTime:   dtegorm.Time{},
@@ -99,8 +100,8 @@ func TestRoutes(t *testing.T) {
 				Name:      "some dumb name",
 				Days:      nil,
 				Recur:     false,
-				StartDate: func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-02"); return t }(),
-				EndDate:   utils.MakePointer(func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-01"); return t }()),
+				StartDate: func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-02"); return t }(),                    //nolint:lll,nlreturn
+				EndDate:   utils.MakePointer(func() dtegorm.Date { t, _ := dtegorm.NewDate("2023-01-01"); return t }()), //nolint:lll,nlreturn
 				StartTime: dtegorm.Time{},
 				EndTime:   dtegorm.Time{},
 			},
@@ -118,8 +119,8 @@ func TestRoutes(t *testing.T) {
 				Recur:     false,
 				StartDate: dtegorm.Date{},
 				EndDate:   nil,
-				StartTime: func() dtegorm.Time { t, _ := dtegorm.NewTime("15:10:04Z"); return t }(),
-				EndTime:   func() dtegorm.Time { t, _ := dtegorm.NewTime("14:10:04Z"); return t }(),
+				StartTime: func() dtegorm.Time { t, _ := dtegorm.NewTime("15:10:04Z"); return t }(), //nolint:nlreturn
+				EndTime:   func() dtegorm.Time { t, _ := dtegorm.NewTime("14:10:04Z"); return t }(), //nolint:nlreturn
 			},
 			expectErr:     true,
 			wantErrDetail: "validation failed",
@@ -144,11 +145,11 @@ func TestRoutes(t *testing.T) {
 			api.AddRoutes(apiInstance)
 
 			resp := apiInstance.Post(tt.basePath, tt.input)
-
-			if resp.Code != http.StatusCreated {
+			if resp.Code != http.StatusCreated { //nolint:nestif
 				if !tt.expectErr {
 					t.Fatalf("Unexpected response: %s", resp.Body.String())
 				}
+
 				respErr := huma.ErrorModel{}
 
 				err := json.Unmarshal(resp.Body.Bytes(), &respErr)
@@ -168,6 +169,7 @@ func TestRoutes(t *testing.T) {
 			} else if tt.expectErr {
 				t.Fatalf("expected error, got %d", resp.Code)
 			}
+
 			postRespBody := timeblockapi.TimeblockPostOutput{}.Body
 
 			err := json.Unmarshal(resp.Body.Bytes(), &postRespBody)
@@ -175,10 +177,10 @@ func TestRoutes(t *testing.T) {
 				t.Fatalf("Failed to unmarshal response: %s", err.Error())
 			}
 
-			getResp := apiInstance.Get(tt.basePath + "/" + fmt.Sprint(postRespBody.ID))
+			getResp := apiInstance.Get(tt.basePath + "/" + strconv.FormatUint(postRespBody.ID, 10))
 			getRespBody := timeblockapi.TimeblockGetOutput{}.Body
 
-			err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
+			err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody) //nolint:musttag
 			if err != nil {
 				t.Fatalf("Failed to unmarshal response: %s", err.Error())
 			}
@@ -230,37 +232,41 @@ func TestRoutes(t *testing.T) {
 			if postRespBody.ID != getRespBody.ID {
 				t.Fatalf("Unexpected response: %s", resp.Body.String())
 			}
-		}) //nolint:wsl
+		})
 	}
 }
 
+//nolint:unused
 func compareStructs(input, wanted interface{}) bool {
 	inputValue := reflect.ValueOf(input)
 	wantedValue := reflect.ValueOf(wanted)
 
 	// Ensure both are structs
 	if inputValue.Kind() != reflect.Struct || wantedValue.Kind() != reflect.Struct {
-		fmt.Println("Both input and wanted must be structs")
+		fmt.Println("Both input and wanted must be structs") //nolint:forbidigo
+
 		return false
 	}
 
 	inputType := inputValue.Type()
 
 	// Iterate over the fields of the input struct
-	for i := 0; i < inputValue.NumField(); i++ {
+	for i := range inputValue.NumField() {
 		inputField := inputValue.Field(i)
 		fieldName := inputType.Field(i).Name
 		wantedField := wantedValue.FieldByName(fieldName)
 
 		// Check if the field exists in wanted and compare values
 		if !wantedField.IsValid() {
-			fmt.Printf("Field %s not found in wanted\n", inputType.Field(i).Name)
+			fmt.Printf("Field %s not found in wanted\n", inputType.Field(i).Name) //nolint:forbidigo
+
 			return false
 		}
 
 		if inputField.Interface() != wantedField.Interface() {
-			fmt.Printf("Mismatch in field %s: input=%v, wanted=%v\n",
+			fmt.Printf("Mismatch in field %s: input=%v, wanted=%v\n", //nolint:forbidigo
 				inputType.Field(i).Name, inputField.Interface(), wantedField.Interface())
+
 			return false
 		}
 	}

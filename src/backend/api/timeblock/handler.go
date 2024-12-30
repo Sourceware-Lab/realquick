@@ -24,7 +24,7 @@ func Get(_ context.Context, input *TimeblockGetInput) (*TimeblockGetOutput, erro
 func Post(_ context.Context, input *TimeblockPostInput) (*TimeblockPostOutput, error) {
 	resp := &TimeblockPostOutput{}
 
-	result := dbpg.DB.Create(&input.Body) // NOTE. This is a POINTER!
+	result := dbpg.DB.Create(&input.Body)
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error creating timeblock")
 

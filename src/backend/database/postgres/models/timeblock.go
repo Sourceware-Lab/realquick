@@ -8,12 +8,12 @@ import (
 )
 
 type TimeBlock struct {
-	ID        uint           `gorm:"primarykey" json:"-"` // identifier for timeblock
+	ID        uint64         `gorm:"primarykey" json:"-"` // identifier for timeblock
 	CreatedAt time.Time      `json:"-"`
 	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `gorm:"index"      json:"-"`
 
-	TagID     uint          `doc:"The ID of the Tag"                                                                                                  required:"false"`                                                                              //nolint:lll
+	TagID     uint64        `doc:"The ID of the Tag"                                                                                                  required:"false"`                                                                              //nolint:lll
 	Name      string        `doc:"Name for the timeblock"                                                                                             example:"SuperCoolName"                                                      required:"false"` //nolint:lll
 	Days      *string       `doc:"Days of the week where the timeblock reoccurs in binary form. STARTING ON MONDAY! Example is every week on Tuesday" example:"0100000"                                                            required:"false"` //nolint:lll
 	Recur     bool          `default:"false"                                                                                                          doc:"Does the timeblock reoccur. If this is set, days also needs to be set." required:"false"` //nolint:lll

@@ -8,13 +8,13 @@ import (
 )
 
 type User struct {
-	ID        uint `gorm:"primarykey"`
+	ID        uint64 `gorm:"primarykey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 	// Required
 	Name string // A regular string field
-	Age  uint8  // An unsigned 8-bit integer
+	Age  uint64 // An unsigned 8-bit integer
 
 	// Optional
 	Email        *string        // A pointer to a string, allowing for null values

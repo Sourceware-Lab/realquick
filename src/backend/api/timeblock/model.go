@@ -7,13 +7,13 @@ import (
 )
 
 type TimeblockGetInput struct {
-	ID uint `doc:"Id for the timeblock you want to get" example:"999" path:"id"`
+	ID uint64 `doc:"Id for the timeblock you want to get" example:"999" path:"id"`
 }
 
 type TimeblockGetOutput struct {
 	Body struct {
 		TimeblockPostBodyInput
-		ID uint `json:"id"`
+		ID uint64 `json:"id"`
 	}
 }
 
@@ -23,7 +23,7 @@ type TimeblockPostInput struct {
 
 type TimeblockPostOutput struct {
 	Body struct {
-		ID uint `doc:"Id for new user" example:"999" json:"id"`
+		ID uint64 `doc:"Id for new user" example:"999" json:"id"`
 	}
 }
 type TimeblockPostBodyInput struct {
