@@ -8,10 +8,10 @@ import (
 )
 
 type TimeBlock struct {
-	ID        uint           `json:"-" gorm:"primarykey"` // identifier for timeblock
+	ID        uint           `gorm:"primarykey" json:"-"` // identifier for timeblock
 	CreatedAt time.Time      `json:"-"`
 	UpdatedAt time.Time      `json:"-"`
-	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
+	DeletedAt gorm.DeletedAt `gorm:"index"      json:"-"`
 
 	TagID     uint          `doc:"The ID of the Tag"                                                                                                  required:"false"`                                                                              //nolint:lll
 	Name      string        `doc:"Name for the timeblock"                                                                                             example:"SuperCoolName"                                                      required:"false"` //nolint:lll
