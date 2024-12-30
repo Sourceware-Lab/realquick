@@ -8,7 +8,13 @@ set -e
 fuzzTime=${1:-5}
 
 # Find files ending with '_test.go' and grep for 'func Fuzz'
-files=$(find . -type f -name '*_test.go' -exec grep -l 'func Fuzz' {} +)
+files=$(find . -type f -name '*_test.go' -exec grep -l 'func Fuzz' {} + || true)
+
+# Exit if no files with 'func Fuzz' were found
+if [[ -z "$files" ]]; then
+  echo "No '_test.go' files containing 'func Fuzz' were found."
+  exit 0
+fi
 
 for file in ${files}
 do

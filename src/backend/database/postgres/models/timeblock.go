@@ -1,51 +1,24 @@
 package pgmodels
 
 import (
-	"errors"
 	"time"
 
+	"github.com/peterHoburg/go-date-and-time-extension/dtegorm"
 	"gorm.io/gorm"
 )
 
-var (
-	ErrMissingTimeblockName = errors.New("name is required")
-	ErrMissingDays          = errors.New("days are required when recur is true")
-	ErrMissingRecur         = errors.New("recur is required when days are provided")
-	ErrStartAfterEnd        = errors.New("start date cannot be after end date")
-)
-
 type TimeBlock struct {
-	ID        uint `gorm:"primarykey"` // identifier for timeblock
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	ID        uint64         `gorm:"primarykey" json:"-"` // identifier for timeblock
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"index"      json:"-"`
 
-	TagID     uint       // ID of tag. Tag obj has ref to make this a FK
-	Name      string     // name for timeblock
-	Days      *string    // days of the week timeblock recurs
-	Recur     bool       // whether timeblock recurs
-	StartDate time.Time  // start date for timeblock
-	EndDate   *time.Time // end date for timeblock
-	// TimeStamp utils.TimeStamp // timestamp for timeblock TODO
-	Duration time.Duration // duration for a timestamp
-}
-
-func (t TimeBlock) Verify() error {
-	if t.Name == "" {
-		return ErrMissingTimeblockName
-	}
-
-	if t.Recur && t.Days == nil {
-		return ErrMissingDays
-	}
-
-	if t.Days != nil && !t.Recur {
-		return ErrMissingRecur
-	}
-
-	if t.EndDate != nil && t.StartDate.After(*t.EndDate) {
-		return ErrStartAfterEnd
-	}
-
-	return nil
+	TagID     uint64        `doc:"The ID of the Tag"                                                                                                  required:"false"`                                                                              //nolint:lll
+	Name      string        `doc:"Name for the timeblock"                                                                                             example:"SuperCoolName"                                                      required:"false"` //nolint:lll
+	Days      *string       `doc:"Days of the week where the timeblock reoccurs in binary form. STARTING ON MONDAY! Example is every week on Tuesday" example:"0100000"                                                            required:"false"` //nolint:lll
+	Recur     bool          `default:"false"                                                                                                          doc:"Does the timeblock reoccur. If this is set, days also needs to be set." required:"false"` //nolint:lll
+	StartDate dtegorm.Date  `doc:"Date to start"                                                                                                      format:"date"                                                                required:"true"`  //nolint:lll
+	EndDate   *dtegorm.Date `doc:"Date to end"                                                                                                        format:"date"                                                                required:"false"` //nolint:lll
+	StartTime dtegorm.Time  `doc:"Time to start"                                                                                                      format:"time"                                                                required:"true"`  //nolint:lll
+	EndTime   dtegorm.Time  `doc:"Time to end"                                                                                                        format:"time"                                                                required:"true"`  //nolint:lll
 }
