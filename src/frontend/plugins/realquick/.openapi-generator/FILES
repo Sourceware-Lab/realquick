@@ -1,0 +1,16 @@
+.gitignore
+.npmignore
+api.ts
+api/healthcheck-api.ts
+api/timeblock-api.ts
+base.ts
+common.ts
+configuration.ts
+git_push.sh
+index.ts
+models/error-detail.ts
+models/error-model.ts
+models/index.ts
+models/timeblock-get-output-body.ts
+models/timeblock-post-body-input.ts
+models/timeblock-post-output-body.ts

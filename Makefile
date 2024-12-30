@@ -1,3 +1,8 @@
+export
+UID="$(shell id -u)"
+GID="$(shell id -g)"
+DOCKER_BUILDKIT=1
+
 .ONESHELL:
 
 run: down
@@ -39,3 +44,7 @@ kill:
 
 down:
 	docker compose down --remove-orphans
+
+generate_sdk: down
+	docker compose -f ./docker-compose.yml -p realquick up -d typescript_sdk_generator
+

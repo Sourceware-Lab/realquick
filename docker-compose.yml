@@ -14,7 +14,11 @@ services:
     environment:
       - DATABASE_DSN=host=postgres user=postgres password=local_fake dbname=postgres port=5432 sslmode=disable TimeZone=GMT
       - REALQUICK_OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
-
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail localhost:8080/healthcheck || exit 1" ]
+      interval: 30s
+      timeout: 2s
+      retries: 5
     depends_on:
       postgres:
         condition: service_healthy
@@ -51,6 +55,20 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  typescript_sdk_generator:
+    image: openapitools/openapi-generator-cli@sha256:886c20b037a9a75bd925de3089f369c05d6b70c93230bc3f0ac22cd4ae0a9385
+    volumes:
+      - ./src/frontend/plugins/realquick:/local
+    command: >
+      generate
+      -i http://backend:8080/openapi.json
+      -g typescript-axios
+      -o /local
+      --additional-properties=supportsES6=true,nullSafeAdditionalProps=true,withSeparateModelsAndApi=true,apiPackage=api,modelPackage=models
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   postgres-data:
