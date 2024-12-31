@@ -1,6 +1,7 @@
 package api
 
 import (
+	tagapi "github.com/Sourceware-Lab/realquick/api/tag"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -20,6 +21,28 @@ func AddRoutes(api huma.API) {
 		Tags:        []string{"Healthcheck"},
 	},
 		healthcheck.Get,
+	)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "get-tag",
+		Method:        http.MethodGet,
+		Path:          "/tag/{id}",
+		Summary:       "Get tag",
+		Tags:          []string{"Tag"},
+		DefaultStatus: http.StatusOK,
+	},
+		tagapi.Get,
+	)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "post-tag",
+		Method:        http.MethodPost,
+		Path:          "/tag",
+		Summary:       "Create new tag",
+		Tags:          []string{"Tag"},
+		DefaultStatus: http.StatusCreated,
+	},
+		tagapi.Post,
 	)
 
 	huma.Register(api, huma.Operation{
