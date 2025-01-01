@@ -5,7 +5,6 @@ import (
 	"github.com/Sourceware-Lab/realquick/api"
 	tagapi "github.com/Sourceware-Lab/realquick/api/tag"
 	dbpg "github.com/Sourceware-Lab/realquick/database/postgres"
-	pgmodels "github.com/Sourceware-Lab/realquick/database/postgres/models"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/humatest"
 	"net/http"
@@ -43,17 +42,7 @@ func TestRoutes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dbName := dbpg.Setup()
-			defer func() {
-				dbpg.Teardown(dbName)
-			}()
-
-			result := dbpg.DB.Create(&pgmodels.Tag{
-				Name:  "test",
-				Color: "#00e4ff",
-			})
-			if result.Error != nil {
-				t.Fatalf("Failed to create tag: %s", result.Error.Error())
-			}
+			defer func() { dbpg.Teardown(dbName) }()
 
 			_, apiInstance := humatest.New(t)
 			api.AddRoutes(apiInstance)
@@ -100,11 +89,11 @@ func TestRoutes(t *testing.T) {
 			}
 
 			if tt.input.Name != getRespBody.Name {
-				t.Fatalf("Incorrect response name: %s", tt.input.Name)
+				t.Fatalf("Incorrect response name: %s", resp.Body.String())
 			}
 
 			if tt.input.Color != getRespBody.Color {
-				t.Fatalf("Incorrect response color: %s", tt.input.Color)
+				t.Fatalf("Incorrect response color: %s", resp.Body.String())
 			}
 
 			if postRespBody.ID != getRespBody.ID {
