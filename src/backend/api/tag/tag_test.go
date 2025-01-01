@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-//nolint:funlen, gocognit, cyclop, maintidx, tparallel
+//nolint:funlen, gocognit, cyclop, tparallel
 func TestRoutes(t *testing.T) {
 	t.Parallel()
 
