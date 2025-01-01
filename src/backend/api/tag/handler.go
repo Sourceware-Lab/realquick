@@ -29,5 +29,7 @@ func Post(_ context.Context, input *TagPostInput) (*TagPostOutput, error) {
 		return nil, result.Error
 	}
 
+	resp.Body.ID = input.Body.ID
+
 	return resp, nil
 }
