@@ -16,15 +16,13 @@ var (
 )
 
 type Tag struct {
-	ID        uint64 `gorm:"primarykey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	ID        uint64         `gorm:"primarykey" json:"-"`
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"index"      json:"-"`
 
-	Name  string
-	Color string
-
-	TimeBlocks []TimeBlock
+	Name  string `doc:"Name for the tag"  example:"MATH"    required:"true"`
+	Color string `doc:"Color for the tag" example:"#ff6100" required:"true"`
 }
 
 func (t Tag) Verify() error {
